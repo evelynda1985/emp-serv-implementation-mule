@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="putEmployeeByIdFlow" doc:id="84db2146-18b3-4939-aa3a-e9d2a2a2bf24" >
+		<http:listener doc:name="Listener" doc:id="b885d6d5-216a-4cb4-b514-6ab8cf8125fc" config-ref="HTTP_Listener_config" path="/updateEmployee/{id}"/>
+		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="8877698a-e32a-464f-a72e-c03301123daf" variableName="id"/>
+		<db:update doc:name="Update" doc:id="b20222ad-b89b-47b2-812f-4e5be56de49e" config-ref="Database_Config">
+			<db:sql >UPDATE employee SET
+	firstName = :firstName,
+	lastName = :lastName,
+	age = :age,
+	role = :role
+	WHERE id = :id
+	</db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id,
+	firstName: payload.firstName,
+	lastName: payload.lastName,
+	age: payload.age,
+	role: payload.role
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="745f4b59-e6d0-4065-b299-f39c2bf8e33e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"Employee sucessfully updated"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
