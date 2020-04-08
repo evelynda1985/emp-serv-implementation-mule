@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="mapEmployee" format="json">
+      <types:shape format="weave" example="examples/getemployee.json"><![CDATA[%dw 2.0
+
+type mapEmployee = Array<{|  id: Number {"typeId": "int"},   name: String|}> {"example": "[{\\\"id\\\":106,\\\"name\\\":\\\"Dejen Wogayehu\\\"},{\\\"id\\\":207,\\\"name\\\":\\\"Jhon Mark\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#39ce83a5-fbd4-4529-8c16-04eb54ca9062">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="mapEmployee"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
